@@ -19,6 +19,23 @@
     $stmt->execute($data);
   }
 
+  // データの一覧表示
+  $sql = 'SELECT * FROM `posts` ORDER BY `created` DESC';
+  // SQLを実行
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+
+  while (1) {
+    $rec = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($rec == false) {
+      break;
+    }
+    echo $rec['nickname'];
+    echo $rec['comment'];
+    echo $rec['created'];
+    echo '<br>';
+  }
+
   // ③DB切断
   $dbh = null;
 ?>
