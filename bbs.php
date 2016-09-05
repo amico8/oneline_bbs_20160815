@@ -40,7 +40,7 @@
 
     } else {
       // データを登録する
-      $sql = 'INSERT INTO `posts`(`nickname`, `comment`, `created`) VALUES (?, ?, now())';
+      $sql = 'INSERT INTO `posts`(`nickname`, `comment`, `created`, `delete_flag`) VALUES (?, ?, now(), 0)';
       $data[] = $_POST['nickname'];
       $data[] = $_POST['comment'];
     }
@@ -53,7 +53,9 @@
   // ------------------------
   // データの削除処理
   if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
-    $sql = 'DELETE FROM `posts` WHERE `id` = ?';
+    // $sql = 'DELETE FROM `posts` WHERE `id` = ?';
+    // 論理削除のSQL
+    $sql = 'UPDATE `posts` SET `delete_flag`= 1 WHERE `id` = ?';
     $data[] = $_GET['id'];
 
     // SQLを実行
@@ -67,7 +69,7 @@
 
   // ------------------------
   // データの一覧表示
-  $sql = 'SELECT * FROM `posts` ORDER BY `created` DESC';
+  $sql = 'SELECT * FROM `posts` WHERE `delete_flag` = 0 ORDER BY `created` DESC';
   // SQLを実行
   $stmt = $dbh->prepare($sql);
   $stmt->execute();
