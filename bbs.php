@@ -28,6 +28,7 @@
     $id = $rec['id'];
   }
 
+  // ------------------------
   // POST送信された時のみ登録処理を実行
   if (!empty($_POST)) {
     if (!empty($_POST['id'])) {
@@ -49,6 +50,22 @@
     $stmt->execute($data);
   }
 
+  // ------------------------
+  // データの削除処理
+  if (!empty($_GET['action']) && $_GET['action'] == 'delete') {
+    $sql = 'DELETE FROM `posts` WHERE `id` = ?';
+    $data[] = $_GET['id'];
+
+    // SQLを実行
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+
+    // bbs.phpに画面を遷移する
+    header('Location: bbs.php');
+    exit();
+  }
+
+  // ------------------------
   // データの一覧表示
   $sql = 'SELECT * FROM `posts` ORDER BY `created` DESC';
   // SQLを実行
@@ -161,6 +178,7 @@
                     ?>
                       <h2><a href="#"><?php echo $d['nickname']; ?></a> <span><?php echo $created; ?></span></h2>
                       <p><?php echo $d['comment']; ?></p>
+                      <a href="bbs.php?action=delete&id=<?php echo $d['id']; ?>" onclick="return confirm('本当に削除しますか？');"><i class="fa fa-trash trash" aria-hidden="true"></i></a>
                   </div>
               </div>
           </article>
